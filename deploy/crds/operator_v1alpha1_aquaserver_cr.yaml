@@ -1,0 +1,25 @@
+apiVersion: operator.aquasec.com/v1alpha1
+kind: AquaServer
+metadata:
+  name: aquq-ha
+spec:
+  requirements: false
+  add: true
+  serviceAccount: "aqua-sa"
+  dbSecretName: "aqua-database-password"
+  dbSecretKey: "db-password"
+  rbac:
+    enable: false
+  adminPassword: "Password1"
+  licenseToken: # Licence
+  clusterMode: true
+  deploy:
+    replicas: 1
+    service: "LoadBalancer"
+    image:
+      repository: "console"
+      registry: "registry.aquasec.com"
+      tag: "3.5"
+      pullPolicy: "IfNotPresent"
+  ssl: false
+  auditSsl: false

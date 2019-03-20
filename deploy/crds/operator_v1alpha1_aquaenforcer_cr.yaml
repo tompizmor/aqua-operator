@@ -1,0 +1,23 @@
+apiVersion: operator.aquasec.com/v1alpha1
+kind: AquaEnforcer
+metadata:
+  name: aqua
+spec:
+  requirements: false
+  serviceAccount: "aqua-sa"
+  token: "tests"
+  rbac:
+    enable: false
+    openshift: false
+    privileged: true
+  deploy:
+    image:
+      repository: "enforcer"
+      registry: "registry.aquasec.com"
+      tag: "4.0"
+      pullPolicy: "IfNotPresent"
+  gateway:
+    host: aqua-gateway-svc
+    port: 3622
+  sendingHostImages: false
+  runcInterception: false
