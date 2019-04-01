@@ -4,7 +4,7 @@ metadata:
   name: aqua
 spec:
   requirements: true
-  password: "Password1"
+  password: "password"
   registry:
     url: "registry.aquasec.com"
     username: "example@gmail.com"
@@ -18,4 +18,3 @@ spec:
       registry: "registry.aquasec.com"
       tag: "3.5"
       pullpolicy: "IfNotPresent"
-      

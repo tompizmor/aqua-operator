@@ -15,7 +15,7 @@ spec:
       serviceAccountName: aqua-operator
       containers:
         - name: aqua-operator
-          image: "registry.aquasec.com/aqua-operator:0.0.1"
+          image: "aquasec/aqua-operator:0.0.1"
           ports:
           - containerPort: 60000
             name: metrics
