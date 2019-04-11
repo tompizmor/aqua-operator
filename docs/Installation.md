@@ -25,8 +25,6 @@ kubectl create -f  deploy/crds/operator_v1alpha1_aquascanner_crd.yaml
 Install operator with version in the [Operator YAML](deploy/operator.yaml)
 
 ```shell
-kubectl create secret docker-registry aqua-registry-secret --docker-server=registry.aquasec.com --docker-username=<AQUA_USERNAME> --docker-password=<AQUA_PASSWORD> --docker-email=<AQUA_EMAIL> -n <namespace>
-
 kubectl create -f deploy/service_account.yaml -n <namespace>
 kubectl create -f deploy/role.yaml
 kubectl create -f deploy/role_binding.yaml

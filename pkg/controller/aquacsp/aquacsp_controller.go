@@ -838,25 +838,35 @@ func (r *ReconcileAquaCsp) ScaleScannerCLI(cr *operatorv1alpha1.AquaCsp) (reconc
 			if val == "node" {
 				count++
 			}
+		} else if val, ok := nodes.Items[index].Labels["node-role.kubernetes.io/compute"]; ok {
+			if val == "true" {
+				count++
+			}
 		}
 	}
 
 	reqLogger.Info("Aqua CSP Scanner Scale:", "Kubernetes Nodes Count:", count)
 
+	if count == 0 {
+		count = 1
+	}
+
 	scanners := result.Count / scannersPerImages
 	extraScanners := result.Count % scannersPerImages
 
-	if scanners == 0 {
+	if scanners < min {
 		scanners = min
 	} else {
 		if extraScanners > 0 {
-			scanners++
+			scanners = scanners + 1
 		}
 
 		if (max * count) < scanners {
 			scanners = (max * count)
 		}
 	}
+
+	reqLogger.Info("Aqua CSP Scanner Scale:", "Final Scanners Count:", scanners)
 
 	found := &operatorv1alpha1.AquaScanner{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: name, Namespace: cr.Namespace}, found)

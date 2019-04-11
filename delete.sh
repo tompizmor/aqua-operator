@@ -5,8 +5,6 @@ kubectl delete -f  deploy/crds/operator_v1alpha1_aquaenforcer_crd.yaml
 kubectl delete -f  deploy/crds/operator_v1alpha1_aquacsp_crd.yaml 
 kubectl delete -f  deploy/crds/operator_v1alpha1_aquascanner_crd.yaml
 
-kubectl delete secret aqua-registry-secret -n aqua
-
 kubectl delete -f deploy/service_account.yaml -n aqua
 kubectl delete -f deploy/role.yaml
 kubectl delete -f deploy/role_binding.yaml
