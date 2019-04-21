@@ -123,9 +123,12 @@ func (r *ReconcileAquaScanner) Reconcile(request reconcile.Request) (reconcile.R
 
 	if instance.Spec.Requirements {
 		reqLogger.Info("Start Setup Requirment For Aqua Scanner")
-		_, err = r.CreateImagePullSecret(instance)
-		if err != nil {
-			return reconcile.Result{}, err
+
+		if len(instance.Spec.RegistryData.ImagePullSecretName) == 0 {
+			_, err = r.CreateImagePullSecret(instance)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
 		}
 
 		_, err = r.CreateAquaServiceAccount(instance)
@@ -230,7 +233,7 @@ func (r *ReconcileAquaScanner) CreateImagePullSecret(cr *operatorv1alpha1.AquaSc
 	reqLogger.Info("Start creating aqua images pull secret")
 
 	// Define a new secret object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, "")
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	secret := requirementsHelper.NewImagePullSecret(cr.Name, cr.Namespace)
 
 	// Set AquaScanner instance as the owner and controller
@@ -263,7 +266,7 @@ func (r *ReconcileAquaScanner) CreateAquaServiceAccount(cr *operatorv1alpha1.Aqu
 	reqLogger.Info("Start creating aqua service account")
 
 	// Define a new service account object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, "")
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	sa := requirementsHelper.NewServiceAccount(cr.Name, cr.Namespace)
 
 	// Set AquaScanner instance as the owner and controller

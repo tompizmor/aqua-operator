@@ -14,20 +14,22 @@ type RequirementsParameters struct {
 	AquaDbSecretName        string
 	AquaServiceAccountName  string
 	AquaRegistry            operatorv1alpha1.AquaDockerRegistry
-	AquaDbPassword          string
 }
 
 type AquaRequirementsHelper struct {
 	Parameters RequirementsParameters
 }
 
-func NewAquaRequirementsHelper(dr *operatorv1alpha1.AquaDockerRegistry, name string, dbpassword string) *AquaRequirementsHelper {
+func NewAquaRequirementsHelper(dr *operatorv1alpha1.AquaDockerRegistry, name string) *AquaRequirementsHelper {
 	params := RequirementsParameters{
 		AquaPullImageSecretName: fmt.Sprintf("%s-registry-secret", name),
 		AquaDbSecretName:        fmt.Sprintf("%s-database-password", name),
 		AquaServiceAccountName:  fmt.Sprintf("%s-sa", name),
 		AquaRegistry:            *dr,
-		AquaDbPassword:          dbpassword,
+	}
+
+	if len(dr.ImagePullSecretName) != 0 {
+		params.AquaPullImageSecretName = dr.ImagePullSecretName
 	}
 
 	return &AquaRequirementsHelper{
@@ -128,7 +130,7 @@ func (rq *AquaRequirementsHelper) NewDbPasswordSecret(name string, namespace str
 		},
 		Type: corev1.SecretTypeOpaque,
 		Data: map[string][]byte{
-			"db-password": []byte(rq.Parameters.AquaDbPassword),
+			"db-password": []byte(CreateRundomPassword()),
 		},
 	}
 

@@ -250,9 +250,38 @@ func (sr *AquaServerHelper) getEnvVars(cr *operatorv1alpha1.AquaServer) []corev1
 			Name:  "SCALOCK_DBPASSWORD",
 			Value: sr.Parameters.AquaDbExteralData.Password,
 		}
+
+		if len(cr.Spec.ExternalDb.PasswordSecretName) != 0 {
+			scalockpassword = corev1.EnvVar{
+				Name: "SCALOCK_DBPASSWORD",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: cr.Spec.ExternalDb.PasswordSecretName,
+						},
+						Key: cr.Spec.ExternalDb.PasswordSecretKey,
+					},
+				},
+			}
+		}
+
 		scalockauditpassword := corev1.EnvVar{
 			Name:  "SCALOCK_AUDIT_DBPASSWORD",
 			Value: sr.Parameters.AquaDbExteralData.AuditPassword,
+		}
+
+		if len(cr.Spec.ExternalDb.AuditPasswordSecretName) != 0 {
+			scalockauditpassword = corev1.EnvVar{
+				Name: "SCALOCK_AUDIT_DBPASSWORD",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: cr.Spec.ExternalDb.AuditPasswordSecretName,
+						},
+						Key: cr.Spec.ExternalDb.AuditPasswordSecretKey,
+					},
+				},
+			}
 		}
 
 		result = append(result, scalockpassword, scalockauditpassword)

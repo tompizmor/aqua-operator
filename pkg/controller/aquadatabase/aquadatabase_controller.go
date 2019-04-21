@@ -134,9 +134,12 @@ func (r *ReconcileAquaDatabase) Reconcile(request reconcile.Request) (reconcile.
 
 	if instance.Spec.Requirements {
 		reqLogger.Info("Start Setup Requirment For Aqua Database")
-		_, err = r.CreateImagePullSecret(instance)
-		if err != nil {
-			return reconcile.Result{}, err
+
+		if len(instance.Spec.RegistryData.ImagePullSecretName) == 0 {
+			_, err = r.CreateImagePullSecret(instance)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
 		}
 
 		_, err = r.CreateAquaServiceAccount(instance)
@@ -144,12 +147,10 @@ func (r *ReconcileAquaDatabase) Reconcile(request reconcile.Request) (reconcile.
 			return reconcile.Result{}, err
 		}
 
-		if len(instance.Spec.Password) > 0 {
-			reqLogger.Info("Start Setup Secret For Database Password")
-			_, err = r.CreateDbPasswordSecret(instance)
-			if err != nil {
-				return reconcile.Result{}, err
-			}
+		reqLogger.Info("Start Setup Secret For Database Password")
+		_, err = r.CreateDbPasswordSecret(instance)
+		if err != nil {
+			return reconcile.Result{}, err
 		}
 	}
 
@@ -331,7 +332,7 @@ func (r *ReconcileAquaDatabase) CreateImagePullSecret(cr *operatorv1alpha1.AquaD
 	reqLogger.Info("Start creating aqua images pull secret")
 
 	// Define a new secret object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, cr.Spec.Password)
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	secret := requirementsHelper.NewImagePullSecret(cr.Name, cr.Namespace)
 
 	// Set AquaCspKind instance as the owner and controller
@@ -364,7 +365,7 @@ func (r *ReconcileAquaDatabase) CreateDbPasswordSecret(cr *operatorv1alpha1.Aqua
 	reqLogger.Info("Start creating aqua db password secret")
 
 	// Define a new secret object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, cr.Spec.Password)
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	secret := requirementsHelper.NewDbPasswordSecret(cr.Name, cr.Namespace)
 
 	// Set AquaCspKind instance as the owner and controller
@@ -397,7 +398,7 @@ func (r *ReconcileAquaDatabase) CreateAquaServiceAccount(cr *operatorv1alpha1.Aq
 	reqLogger.Info("Start creating aqua service account")
 
 	// Define a new service account object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, cr.Spec.Password)
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	sa := requirementsHelper.NewServiceAccount(cr.Name, cr.Namespace)
 
 	// Set AquaCspKind instance as the owner and controller

@@ -5,23 +5,28 @@ import (
 )
 
 type AquaDockerRegistry struct {
-	Url      string `json:"url"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	Url                 string `json:"url"`
+	Username            string `json:"username"`
+	Password            string `json:"password"`
+	Email               string `json:"email"`
+	ImagePullSecretName string `json:"imagePullSecret"`
 }
 
 type AquaDatabaseInformation struct {
-	Name          string `json:"name"`
-	Host          string `json:"host"`
-	Port          int64  `json:"port"`
-	Username      string `json:"username"`
-	Password      string `json:"password"`
-	AuditName     string `json:"auditName"`
-	AuditHost     string `json:"auditHost"`
-	AuditPort     int64  `json:"auditPort"`
-	AuditUsername string `json:"auditUsername"`
-	AuditPassword string `json:"auditPassword"`
+	Name                    string `json:"name"`
+	Host                    string `json:"host"`
+	Port                    int64  `json:"port"`
+	Username                string `json:"username"`
+	Password                string `json:"password"`
+	PasswordSecretName      string `json:"passwordSecretName"`
+	PasswordSecretKey       string `json:"passwordSecretKey"`
+	AuditName               string `json:"auditName"`
+	AuditHost               string `json:"auditHost"`
+	AuditPort               int64  `json:"auditPort"`
+	AuditUsername           string `json:"auditUsername"`
+	AuditPassword           string `json:"auditPassword"`
+	AuditPasswordSecretName string `json:"auditPasswordSecretName"`
+	AuditPasswordSecretKey  string `json:"auditPasswordSecretKey"`
 }
 
 type AquaImage struct {
@@ -61,6 +66,8 @@ type AquaLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Host     string `json:"host"`
+	// PasswordSecretName string `json:"passwordSecretName"`
+	// PasswordSecretKey  string `json:"passwordSecretKey"`
 }
 
 type AquaScannerCliScale struct {

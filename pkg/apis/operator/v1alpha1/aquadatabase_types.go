@@ -12,7 +12,6 @@ type AquaDatabaseSpec struct {
 	ServiceAccountName string              `json:"serviceAccount,omitempty"`
 	DbSecretName       string              `json:"dbSecretName,omitempty"`
 	DbSecretKey        string              `json:"dbSecretKey,omitempty"`
-	Password           string              `json:"password,omitempty"`
 	RegistryData       *AquaDockerRegistry `json:"registry,omitempty"`
 
 	DbService *AquaService `json:"deploy,required"`

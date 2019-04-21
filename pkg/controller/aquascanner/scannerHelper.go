@@ -44,6 +44,7 @@ func (as *AquaScannerHelper) newDeployment(cr *operatorv1alpha1.AquaScanner) *ap
 		"deployedby":         "aqua-operator",
 		"aquasecoperator_cr": cr.Name,
 	}
+	env_vars := as.getEnvVars(cr)
 	annotations := map[string]string{
 		"description": "Deploy the aqua scanner",
 	}
@@ -90,6 +91,7 @@ func (as *AquaScannerHelper) newDeployment(cr *operatorv1alpha1.AquaScanner) *ap
 									ContainerPort: 8080,
 								},
 							},
+							Env: env_vars,
 							VolumeMounts: []corev1.VolumeMount{
 								{
 									Name:      "docker-socket-mount",
@@ -148,4 +150,32 @@ func (as *AquaScannerHelper) newDeployment(cr *operatorv1alpha1.AquaScanner) *ap
 	}
 
 	return deployment
+}
+
+func (as *AquaScannerHelper) getEnvVars(cr *operatorv1alpha1.AquaScanner) []corev1.EnvVar {
+
+	result := []corev1.EnvVar{
+		{
+			Name:  "SCANNER_PASSWORD",
+			Value: cr.Spec.Login.Password,
+		},
+	}
+
+	/*if len(cr.Spec.Login.PasswordSecretName) != 0 && len(cr.Spec.Login.PasswordSecretKey) != 0 {
+		result = []corev1.EnvVar{
+			{
+				Name: "SCANNER_PASSWORD",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: cr.Spec.Login.PasswordSecretName,
+						},
+						Key: cr.Spec.Login.PasswordSecretKey,
+					},
+				},
+			},
+		}
+	}*/
+
+	return result
 }

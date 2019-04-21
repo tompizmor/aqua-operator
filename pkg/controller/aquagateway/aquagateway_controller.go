@@ -126,9 +126,12 @@ func (r *ReconcileAquaGateway) Reconcile(request reconcile.Request) (reconcile.R
 
 	if instance.Spec.Requirements {
 		reqLogger.Info("Start Setup Requirment For Aqua Gateway")
-		_, err = r.CreateImagePullSecret(instance)
-		if err != nil {
-			return reconcile.Result{}, err
+
+		if len(instance.Spec.RegistryData.ImagePullSecretName) == 0 {
+			_, err = r.CreateImagePullSecret(instance)
+			if err != nil {
+				return reconcile.Result{}, err
+			}
 		}
 
 		_, err = r.CreateAquaServiceAccount(instance)
@@ -136,12 +139,10 @@ func (r *ReconcileAquaGateway) Reconcile(request reconcile.Request) (reconcile.R
 			return reconcile.Result{}, err
 		}
 
-		if len(instance.Spec.Password) > 0 {
-			reqLogger.Info("Start Setup Secret For Database Password")
-			_, err = r.CreateDbPasswordSecret(instance)
-			if err != nil {
-				return reconcile.Result{}, err
-			}
+		reqLogger.Info("Start Setup Secret For Database Password")
+		_, err = r.CreateDbPasswordSecret(instance)
+		if err != nil {
+			return reconcile.Result{}, err
 		}
 	}
 
@@ -287,7 +288,7 @@ func (r *ReconcileAquaGateway) CreateImagePullSecret(cr *operatorv1alpha1.AquaGa
 	reqLogger.Info("Start creating aqua images pull secret")
 
 	// Define a new secret object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, cr.Spec.Password)
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	secret := requirementsHelper.NewImagePullSecret(cr.Name, cr.Namespace)
 
 	// Set AquaGateway instance as the owner and controller
@@ -320,7 +321,7 @@ func (r *ReconcileAquaGateway) CreateDbPasswordSecret(cr *operatorv1alpha1.AquaG
 	reqLogger.Info("Start creating aqua db password secret")
 
 	// Define a new secret object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, cr.Spec.Password)
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	secret := requirementsHelper.NewDbPasswordSecret(cr.Name, cr.Namespace)
 
 	// Set AquaGateway instance as the owner and controller
@@ -353,7 +354,7 @@ func (r *ReconcileAquaGateway) CreateAquaServiceAccount(cr *operatorv1alpha1.Aqu
 	reqLogger.Info("Start creating aqua service account")
 
 	// Define a new service account object
-	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name, cr.Spec.Password)
+	requirementsHelper := common.NewAquaRequirementsHelper(cr.Spec.RegistryData, cr.Name)
 	sa := requirementsHelper.NewServiceAccount(cr.Name, cr.Namespace)
 
 	// Set AquaGateway instance as the owner and controller

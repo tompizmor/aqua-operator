@@ -39,7 +39,6 @@ func newAquaGatewayHelper(cr *operatorv1alpha1.AquaGateway) *AquaGatewayHelper {
 	}
 
 	if len(params.AquaDbName) == 0 {
-		// Default AquaDatabase Name
 		params.AquaDbName = "aqua"
 	}
 
@@ -222,9 +221,38 @@ func (gw *AquaGatewayHelper) getEnvVars(cr *operatorv1alpha1.AquaGateway) []core
 			Name:  "SCALOCK_DBPASSWORD",
 			Value: gw.Parameters.AquaDbExteralData.Password,
 		}
+
+		if len(cr.Spec.ExternalDb.PasswordSecretName) != 0 {
+			scalock_password = corev1.EnvVar{
+				Name: "SCALOCK_DBPASSWORD",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: cr.Spec.ExternalDb.PasswordSecretName,
+						},
+						Key: cr.Spec.ExternalDb.PasswordSecretKey,
+					},
+				},
+			}
+		}
+
 		scalock_audit_password := corev1.EnvVar{
 			Name:  "SCALOCK_AUDIT_DBPASSWORD",
 			Value: gw.Parameters.AquaDbExteralData.AuditPassword,
+		}
+
+		if len(cr.Spec.ExternalDb.AuditPasswordSecretName) != 0 {
+			scalock_audit_password = corev1.EnvVar{
+				Name: "SCALOCK_AUDIT_DBPASSWORD",
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: cr.Spec.ExternalDb.AuditPasswordSecretName,
+						},
+						Key: cr.Spec.ExternalDb.AuditPasswordSecretKey,
+					},
+				},
+			}
 		}
 
 		result = append(result, scalock_password, scalock_audit_password)
