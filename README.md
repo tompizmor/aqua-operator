@@ -41,7 +41,7 @@ The following documentation is provided:
   - [Aqua CSP](docs/AquaCsp.md) - **recommended**!
   - [Aqua Server](docs/AquaServer.md)
   - [Aqua Gateway](docs/AquaGateway.md)
-  - [Aqua Database](docs/AquaDatabase.md) - **Not For Production Environment - Please Use External DB with PosttreSQL Operator**
+  - [Aqua Database](docs/AquaDatabase.md) - **Not For Production Environment - Please Use External DB with PostgreSQL Operator**
   - [Aqua Enforcer](docs/AquaEnforcer.md)
   - [Aqua Scanner CLI](docs/AquaScanner.md)
 - [Extra Aqua Types](docs/Types.md)
