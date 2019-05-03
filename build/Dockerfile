@@ -1,11 +1,12 @@
-#FROM alpine:3.8
 FROM registry.access.redhat.com/devtools/go-toolset-1.10-rhel7
 
-#RUN apk upgrade --update --no-cache
-#USER nobody
+LABEL name="Aqua Operator" \
+      vendor="Aqua Security Software Ltd." \
+      version="v0.0.1" \
+      release="1" \
+      summary="Aqua Security Operator." \
+      description="The Aqua Security Operator runs within a Openshift (or Kubernetes) cluster, and provides a means to deploy and manage the Aqua Security cluster and components"
 
-LABEL io.k8s.display-name="OpenShift / Kubernetes Aqua Security operator" \
-      io.k8s.description="Aqua Security Operator to deploy aqua component and maintenance" \
-      maintainer="Nissim Bitan <nissim.bitan@aquasec.com>"
+COPY licenses /licenses
 
 ADD build/_output/bin/aqua-operator /usr/local/bin/aqua-operator
