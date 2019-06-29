@@ -67,9 +67,9 @@ oc secrets add aqua-sa aqua-registry-secret --for=pull -n aqua
 
 ## Deployments (Openshift and Kubernetes)
 Aqua deployments types:
-- [Aqua CSP](docs/AquaCsp.md) - **recommended**!
-- [Aqua Server](docs/AquaServer.md)
-- [Aqua Gateway](docs/AquaGateway.md)
-- [Aqua Database](docs/AquaDatabase.md) - **Not For Production Environment - Please Use External DB with PosttreSQL Operator**
-- [Aqua Enforcer](docs/AquaEnforcer.md)
-- [Aqua Scanner CLI](docs/AquaScanner.md)
+- [Aqua CSP](AquaCsp.md) - **recommended**!
+- [Aqua Server](AquaServer.md)
+- [Aqua Gateway](AquaGateway.md)
+- [Aqua Database](AquaDatabase.md) - **Not For Production Environment - Please Use External DB with PosttreSQL Operator**
+- [Aqua Enforcer](AquaEnforcer.md)
+- [Aqua Scanner CLI](AquaScanner.md)
